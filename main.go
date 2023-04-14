@@ -7,6 +7,7 @@ import (
   "bufio"
 
   "github.com/karchx/newape/lexer"
+  "github.com/karchx/newape/tokens"
 )
 
 func main() {
@@ -22,5 +23,19 @@ func main() {
   reader := bufio.NewReader(file)
   lex := lexer.New(reader, *f)
 
-  fmt.Println(lex)
+  var toks []tokens.Token
+
+  for {
+    tok, err := lex.NextToken()
+
+    toks = append(toks, tok)
+    if err != nil {
+      panic(err)
+    }
+    if tok.Type == tokens.EOF {
+      break
+    }
+  }
+
+  fmt.Println(toks)
 }
