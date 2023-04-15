@@ -63,6 +63,13 @@ func (l *Lexer) NextToken() (tokens.Token, error) {
 			l.lineHadNonWS = true
 			tok = newToken(tokens.PLUS, l.ch)
 		}
+  default:
+    l.lineHadNonWS = true
+    if l.isDigit(l.ch) {
+      tok.Type = tokens.NUM
+      tok.Literal = l.readDec()
+      return tok, nil
+    }
 	}
 
   l.readChar()
@@ -83,6 +90,16 @@ func (l *Lexer) isDigit(ch byte) bool {
 		return true
 	}
 	return false
+}
+
+func (l *Lexer) readDec() string {
+  var dec string
+
+  for l.isDigit(l.ch) {
+    dec += string(l.ch)
+    l.readChar()
+  }
+  return dec
 }
 
 func (l *Lexer) handleComment() tokens.Token {

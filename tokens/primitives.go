@@ -4,15 +4,17 @@ package tokens
 type TokenType string
 
 const (
-  ILLEGAL = "ILLEGAL"
-  EOF     = "EOF"
-  IDENT   = "IDENT"
+	ILLEGAL = "ILLEGAL"
+	EOF     = "EOF"
+	IDENT   = "IDENT"
 
-  PLUS    = "PLUS"
+	PLUS = "PLUS"
+
+	NUM  = "NUM" // decimal number
 )
 
 // Token is a token returned by the lexer
 type Token struct {
-  Type    TokenType
-  Literal string
+	Type    TokenType
+	Literal string
 }
