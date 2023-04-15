@@ -54,6 +54,8 @@ func (l *Lexer) NextToken() (tokens.Token, error) {
 	var tok tokens.Token
 
 	switch l.ch {
+  case 0:
+    tok = newToken(tokens.EOF, '\x00')
 	case '+':
 		if !l.lineHadNonWS {
 			tok = l.handleComment()
@@ -63,6 +65,7 @@ func (l *Lexer) NextToken() (tokens.Token, error) {
 		}
 	}
 
+  l.readChar()
 	return tok, nil
 }
 
