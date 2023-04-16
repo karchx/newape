@@ -58,13 +58,6 @@ func (l *Lexer) NextToken() (tokens.Token, error) {
 	case ' ', '\t':
 		tok.Type = tokens.WHITESPACE
 		tok.Literal = l.consumeWhiteSpace()
-	case '+':
-		if !l.lineHadNonWS {
-			tok = l.handleComment()
-		} else {
-			l.lineHadNonWS = true
-			tok = newToken(tokens.PLUS, l.ch)
-		}
 	case '\n', '\r':
 		if !l.lineHadNonWS {
 			tok = newToken(tokens.NULLLINE, l.ch)
@@ -77,6 +70,13 @@ func (l *Lexer) NextToken() (tokens.Token, error) {
 			l.line++
 			l.col = 0
 			l.lineHadNonWS = false
+		}
+	case '+':
+		if !l.lineHadNonWS {
+			tok = l.handleComment()
+		} else {
+			l.lineHadNonWS = true
+			tok = newToken(tokens.PLUS, l.ch)
 		}
 	default:
 		l.lineHadNonWS = true
