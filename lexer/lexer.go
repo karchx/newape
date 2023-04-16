@@ -52,10 +52,12 @@ func newToken(tokenType tokens.TokenType, ch byte) tokens.Token {
 
 func (l *Lexer) NextToken() (tokens.Token, error) {
 	var tok tokens.Token
-
 	switch l.ch {
-  case 0:
-    tok = newToken(tokens.EOF, '\x00')
+	case 0:
+		tok = newToken(tokens.EOF, '\x00')
+	case ' ', '\t':
+		tok.Type = tokens.WHITESPACE
+		tok.Literal = l.consumeWhiteSpace()
 	case '+':
 		if !l.lineHadNonWS {
 			tok = l.handleComment()
@@ -63,16 +65,16 @@ func (l *Lexer) NextToken() (tokens.Token, error) {
 			l.lineHadNonWS = true
 			tok = newToken(tokens.PLUS, l.ch)
 		}
-  default:
-    l.lineHadNonWS = true
-    if l.isDigit(l.ch) {
-      tok.Type = tokens.NUM
-      tok.Literal = l.readDec()
-      return tok, nil
-    }
+	default:
+		l.lineHadNonWS = true
+		if l.isDigit(l.ch) {
+			tok.Type = tokens.NUM
+			tok.Literal = l.readDec()
+			return tok, nil
+		}
 	}
 
-  l.readChar()
+	l.readChar()
 	return tok, nil
 }
 
@@ -93,13 +95,13 @@ func (l *Lexer) isDigit(ch byte) bool {
 }
 
 func (l *Lexer) readDec() string {
-  var dec string
+	var dec string
 
-  for l.isDigit(l.ch) {
-    dec += string(l.ch)
-    l.readChar()
-  }
-  return dec
+	for l.isDigit(l.ch) {
+		dec += string(l.ch)
+		l.readChar()
+	}
+	return dec
 }
 
 func (l *Lexer) handleComment() tokens.Token {
@@ -122,6 +124,20 @@ func (l *Lexer) consumeLine() {
 			break
 		}
 	}
+}
+
+func (l *Lexer) consumeWhiteSpace() string {
+	var whiteSpace string
+	whiteSpace += string(l.ch)
+	for l.ch == ' ' || l.ch == '\t' {
+		if l.peekChar() != ' ' && l.peekChar() != '\t' {
+			break
+		}
+		l.readChar()
+		whiteSpace += string(l.ch)
+	}
+
+	return whiteSpace
 }
 
 func (l *Lexer) peekChar() byte {
