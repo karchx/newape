@@ -65,6 +65,19 @@ func (l *Lexer) NextToken() (tokens.Token, error) {
 			l.lineHadNonWS = true
 			tok = newToken(tokens.PLUS, l.ch)
 		}
+	case '\n', '\r':
+		if !l.lineHadNonWS {
+			tok = newToken(tokens.NULLLINE, l.ch)
+			l.consumeLine()
+			l.line++
+			l.col = 0
+			l.lineHadNonWS = true
+		} else {
+			tok = newToken(tokens.NEWLINE, l.ch)
+			l.line++
+			l.col = 0
+			l.lineHadNonWS = false
+		}
 	default:
 		l.lineHadNonWS = true
 		if l.isDigit(l.ch) {

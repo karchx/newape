@@ -18,6 +18,8 @@ const (
 	PLUS = "PLUS"
 
 	NUM = "NUM" // decimal number
+
+	NULLLINE = "NULLLINE" // A line with no characters.
 )
 
 // Token is a token returned by the lexer
